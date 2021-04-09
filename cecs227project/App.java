@@ -11,7 +11,7 @@ topPanel is placed into the top section of mainPanel.
 topPanel is split again into a top and bottom section.
 */
 class App extends JFrame {
-    // Ignore the next line, VSCODE throws a fit without it
+    // Ignore the next line, VSCODE throws a fit without it. :(
     private static final long serialVersionUID = 3725860681747915637L;
     //
     JPanel mainPanel;
@@ -23,7 +23,7 @@ class App extends JFrame {
 
     public App() {
         mainPanel = new JPanel();
-        topMenu = new JPanel();
+        topMenu = new JPanel(); 
         topToolbar = new JPanel();
         topPanel = new JPanel();
         ok = new JButton("Okay");
@@ -36,9 +36,11 @@ class App extends JFrame {
         this.setTitle("File Manager");
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(topPanel, BorderLayout.NORTH);
+        mainPanel.add(cancel, BorderLayout.SOUTH);
+        topPanel.setLayout(new BorderLayout());
         topPanel.add(topMenu, BorderLayout.NORTH);
         topPanel.add(topToolbar, BorderLayout.SOUTH);
-        mainPanel.add(cancel, BorderLayout.SOUTH);
+       
         this.add(mainPanel);
 
         this.setSize(420, 420);
