@@ -6,7 +6,10 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-
+/* mainPanel is split into a top, middle, and bottom section.
+topPanel is placed into the top section of mainPanel.
+topPanel is split again into a top and bottom section.
+*/
 class App extends JFrame {
     // Ignore the next line, VSCODE throws a fit without it
     private static final long serialVersionUID = 3725860681747915637L;
@@ -16,7 +19,7 @@ class App extends JFrame {
     JPanel topMenu;
     JPanel topToolbar;
     JButton ok;
-    JButton cancel;
+    JButton cancel; 
 
     public App() {
         mainPanel = new JPanel();
