@@ -36,9 +36,11 @@ class App extends JFrame {
         this.setTitle("File Manager");
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(topPanel, BorderLayout.NORTH);
+        mainPanel.add(cancel, BorderLayout.SOUTH);
+        topPanel.setLayout(new BorderLayout());
         topPanel.add(topMenu, BorderLayout.NORTH);
         topPanel.add(topToolbar, BorderLayout.SOUTH);
-        mainPanel.add(cancel, BorderLayout.SOUTH);
+       
         this.add(mainPanel);
 
         this.setSize(420, 420);
