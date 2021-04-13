@@ -20,27 +20,40 @@ class App extends JFrame {
     JPanel topToolbar;
     JButton ok;
     JButton cancel; 
+    JButton topPanelTop;
+    JButton topPanelBottom;
+    JButton bottomBar;
+    JButton middleBar;
 
     public App() {
+        //Panels created
         mainPanel = new JPanel();
+        topPanel = new JPanel();
         topMenu = new JPanel(); 
         topToolbar = new JPanel();
-        topPanel = new JPanel();
-        ok = new JButton("Okay");
-        cancel = new JButton("Cancel");
-        ok.addActionListener(new okActionListener());
-        cancel.addActionListener(new okActionListener());
+
+        //Buttons created
+        topPanelTop = new JButton("Okay");
+        topPanelBottom = new JButton("Okay");
+        bottomBar = new JButton("Cancel");
+        middleBar = new JButton("Okay");
+
+        //ActionListeners created
+        topPanelTop.addActionListener(new okActionListener());
+        topPanelBottom.addActionListener(new okActionListener());
+        bottomBar.addActionListener(new okActionListener());
     }
 
     public void go() {
         this.setTitle("File Manager");
         mainPanel.setLayout(new BorderLayout());
-        mainPanel.add(topPanel, BorderLayout.NORTH);
-        mainPanel.add(cancel, BorderLayout.SOUTH);
+        mainPanel.add(topPanel, BorderLayout.NORTH);      
         topPanel.setLayout(new BorderLayout());
-        topPanel.add(topMenu, BorderLayout.NORTH);
-        topPanel.add(topToolbar, BorderLayout.SOUTH);
-       
+            topPanel.add(topPanelTop, BorderLayout.NORTH);
+            topPanel.add(topPanelBottom, BorderLayout.SOUTH);
+        mainPanel.add(bottomBar, BorderLayout.SOUTH);
+        mainPanel.add(middleBar, BorderLayout.CENTER);
+        
         this.add(mainPanel);
 
         this.setSize(420, 420);
