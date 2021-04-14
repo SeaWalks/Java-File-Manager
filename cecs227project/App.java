@@ -8,6 +8,7 @@ import javax.swing.*;
 Current status: 
 > Basic GUI stuff done (menus, toolbars)
 > Internal windows added
+>SplitPane added to internal windows
 *******************/
 
 class App extends JFrame {
@@ -21,6 +22,7 @@ class App extends JFrame {
     JButton ok;
     JButton cancel;
     JLabel statusBar;
+
 
     private void buildMenuBar() {
         mb = new JMenuBar();
@@ -67,10 +69,13 @@ class App extends JFrame {
         toolbarPanel.add(toolbarDetails);
         toolbarPanel.add(toolbarSimple);
     }
+    
     public App() {
+        //IDk if we're allowed to assign a string to the statusBar JLabel in the constructor
         mainPanel = new JPanel();
         toolbarPanel = new JPanel();
         desktopPane = new JDesktopPane();
+        
         statusBar = new JLabel("String argument for Drive information should be passed here.");
     }
 
