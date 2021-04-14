@@ -1,55 +1,72 @@
 package cecs227project;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 
-/* mainPanel is split into a top, middle, and bottom section.
-topPanel is placed into the top section of mainPanel.
-topPanel is split again into a top and bottom section.
+import java.awt.event.*;
+import java.awt.*;
+import javax.swing.*;
+
+
+/* 
+******************
+Current status: Basic GUI stuff done (menus, toolbars)
+*******************
+Everything is in here. There are so many declarations
+that feel redundant. Maybe we should declare/create 
+things in the same line in the App method. We should
+look into breaking this up into classes, with app as
+the parent class to reduce LOC in any one class. Looks
+messy.
+Perhaps
+->App
+    ->Toolbar
+    ->File Manager (center window stuff)
+    Everything seems to hinge on data from file manager.
 */
 class App extends JFrame {
-    // Ignore the next line, VSCODE throws a fit without it. :(
+    // Ignore line, VSCODE throws a fit without it. :(
     private static final long serialVersionUID = 3725860681747915637L;
 
     // Declare Panels
     JPanel mainPanel;
     JPanel topPanel;
-    JPanel topMenu;
-    JPanel topToolbar;
 
-    // Declare Menu
+    // Declare Menus
+    /*
+    Potentially replace all these declarations with arraylist? 
+    Ex an array of menus, MenuItems, etc. Then you only declare 
+    the array and assign as nessecary?
+    */
     JMenuBar mb;
     JMenu fileMenu, treeMenu, windowMenu, helpMenu;
     JMenuItem
-    // File
-    rename, copy, delete, run, exit,
-            // Tree
-            expandBranch, collapseBranch,
-            // Window
-            newItem, cascade, // Just new is not a valid variable declaration
-            // Help
-            help, about;
-    // Declare Buttons
+        // File
+        rename, copy, delete, run, exit,
+        // Tree
+        expandBranch, collapseBranch,
+        // Window
+        newItem, cascade, // Just new is not a valid variable declaration
+        // Help
+        help, about;
+
+    // Declare Menu Buttons
     JButton ok;
     JButton cancel;
-    JButton topPanelTop;
-    JButton topPanelBottom;
+    JButton toolbarDetails;
+    JButton toolbarSimple;
     JButton bottomBar;
     JButton middleBar;
+    JComboBox toolbarBox; //wtf is this warning? Fix it eventually.
+
+
+    //Declare Labels
+    JLabel statusBar, testLabel1, testLabel2, testLabel3;
+    
 
     public App() {
         // Panels created
         mainPanel = new JPanel();
         topPanel = new JPanel();
-        topMenu = new JPanel();
-        topToolbar = new JPanel();
+      
 
         // Menubar created
         mb = new JMenuBar();
@@ -72,30 +89,42 @@ class App extends JFrame {
         about = new JMenuItem("About");
 
         // Buttons created
-        topPanelTop = new JButton("Okay");
-        topPanelBottom = new JButton("Okay");
-        bottomBar = new JButton("Cancel");
+        toolbarDetails = new JButton("Details");
+        toolbarSimple = new JButton("Simple");
         middleBar = new JButton("Okay");
 
+
+        //Statusbar
+        statusBar = new JLabel("String argument for Drive information should be passed here.");
+        
+
         // ActionListeners created
-        topPanelTop.addActionListener(new okActionListener());
-        topPanelBottom.addActionListener(new okActionListener());
-        bottomBar.addActionListener(new okActionListener());
+        toolbarDetails.addActionListener(new okActionListener());
+        toolbarSimple.addActionListener(new okActionListener());
+        //bottomBar.addActionListener(new okActionListener());
     }
 
     public void go() {
         this.setTitle("File Manager");
-        // BUILD PANELS
+
+        //Build Panels
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(topPanel, BorderLayout.NORTH);
-        topPanel.setLayout(new BorderLayout());
-        topPanel.add(topPanelTop, BorderLayout.NORTH);
-        topPanel.add(topPanelBottom, BorderLayout.SOUTH);
-        mainPanel.add(bottomBar, BorderLayout.SOUTH);
-        mainPanel.add(middleBar, BorderLayout.CENTER);
-        //
+        topPanel.setLayout(new FlowLayout());
+        //Toolbar Combobox; Jcombobox holds type string
+        //may need to change later.
+        String s1[] = {"Pancakes", "Waffles", "Syrup"};
+        toolbarBox = new JComboBox<String>(s1); 
 
-        // Add buttons to menus
+        
+       
+        topPanel.add(toolbarBox);    
+        topPanel.add(toolbarDetails);
+        topPanel.add(toolbarSimple);
+        mainPanel.add(statusBar, BorderLayout.SOUTH);
+        mainPanel.add(middleBar, BorderLayout.CENTER);
+
+        // Add buttons to menus;
         fileMenu.add(rename);
         fileMenu.add(copy);
         fileMenu.add(delete);
@@ -107,14 +136,15 @@ class App extends JFrame {
         windowMenu.add(cascade);
         helpMenu.add(help);
         helpMenu.add(about);
+
         // Add menus to menubar
         mb.add(fileMenu);
         mb.add(treeMenu);
         mb.add(windowMenu);
         mb.add(helpMenu);
-
-        //
         this.setJMenuBar(mb);
+
+        //Draw the main panel;
         this.add(mainPanel);
         this.setSize(420, 420);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
