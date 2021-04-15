@@ -90,6 +90,7 @@ class App extends JFrame {
         mainPanel.add(statusBar, BorderLayout.SOUTH);
         mainPanel.add(desktopPane, BorderLayout.CENTER);
         FileFrame ff = new FileFrame();
+        
         desktopPane.add(ff);
         // Draw the main panel;
         this.add(mainPanel);
