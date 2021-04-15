@@ -15,7 +15,7 @@ public class FilePanel extends JPanel {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         add(scrollPane);
     }
-    
+
     private String[] printDetails() { // Eventually take in a string to the selected directory?
         File file = new File("C:\\Users\\Eric\\Documents");/* Send current directory here */
         File[] files = file.listFiles();
@@ -23,11 +23,11 @@ public class FilePanel extends JPanel {
         for (int i = 0; i < files.length; i++) {
 
             SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy)");
-            //DecimalFormat dformat = new DecimalFormat("%,%%%");
+            // DecimalFormat dformat = new DecimalFormat("%,%%%");
 
             if (files[i].isDirectory()) {
-                details[i] = ("Directory" + files[i].getAbsolutePath() + " Date:"
-                        + formatter.format(files[i].lastModified()) /*+" Size:" + dformat.format(files[i].length())*/);
+                details[i] = ("Directory" + files[i].getAbsolutePath() + " Date:" + formatter
+                        .format(files[i].lastModified()) /* +" Size:" + dformat.format(files[i].length()) */);
 
             } else {
                 details[i] = ("Directory" + files[i].getAbsolutePath() + " Date:"
