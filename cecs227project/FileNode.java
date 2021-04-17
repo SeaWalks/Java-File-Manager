@@ -21,7 +21,7 @@ public class FileNode {
 
     public String toString() {
         if (file.getName().equals("")) {
-            return file.getPath();
+            return file.getAbsolutePath();
         } else {
             return file.getName();
         }

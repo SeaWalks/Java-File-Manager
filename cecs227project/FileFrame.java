@@ -9,7 +9,7 @@ public class FileFrame extends JInternalFrame {
     public FileFrame(){
         
         JSplitPane splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new DirPanel(), new FilePanel());
-        splitpane.setResizeWeight(0.4);
+        splitpane.setDividerLocation(.6f);
         splitpane.getLeftComponent().setSize((int)(splitpane.getWidth()*.5), splitpane.getHeight());
         this.setTitle("Current folder location goes here.");
         this.getContentPane().add(splitpane);
