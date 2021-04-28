@@ -120,24 +120,33 @@ class App extends JFrame{
     }
 
     public void buildStatusBar(String s){
+        statusBar.removeAll();
         File file = new File(s);
-        File[] files = file.listFiles();
+        System.out.println(file.getName());
+
+        double usedSpace =  file.getUsableSpace();
+        double freeSpace =  file.getFreeSpace();
+        double totalSpace =  file.getTotalSpace();
+
+        System.out.println(usedSpace);
+        System.out.println(freeSpace);
+        System.out.println(totalSpace);
 
 
-        //int usedSpace = (int) file.getUsableSpace();
-        //int freeSpace = (int) file.getFreeSpace();
-        //int totalSpace = (int) file.getTotalSpace();
-
-        //JLabel status = new JLabel("Current Drive: " + directory + " Free Space: " + freeSpace);
-        //statusBar.add(status);
-        //panel.add(statusBar, BorderLayout.SOUTH);
+        JLabel status = new JLabel("Current Drive: " + s + " Free Space: " + freeSpace + " Used Space: " + usedSpace + " Total Space: " + totalSpace);
+        statusBar.add(status);
+        panel.add(statusBar, BorderLayout.SOUTH);
     }
-    //class OkAction implements ActionListener{
-        //@Override
-       // public void actionPerformed(ActionEvent e){
-           // dispose();
-        //}
-   // }
+   
+    private class toolbarBoxAction implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e){
+            String s = (String) toolbarBox.getSelectedItem();
+            System.out.println("you selected " + s);
+            buildStatusBar(s);
+        }
+    }
+    
     private class SimpleAction implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e){
@@ -217,7 +226,15 @@ class App extends JFrame{
     private class CascadeAction implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e){
-            setLocationByPlatform(true);
+           JInternalFrame[] cascade = desktopPane.getAllFrames();
+            int i = 10;
+            int j = 10;
+            for (JInternalFrame k : cascade){
+                k.setLocation(i, j);
+                i += 25;
+                j += 25;
+                k.moveToFront();
+            }
         }
     }
 
