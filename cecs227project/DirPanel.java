@@ -33,7 +33,7 @@ public class DirPanel extends JPanel {
 
 		tree = new JTree();
 		tree.addTreeSelectionListener(new DemoTreeSelectionListener());
-		FileNode base = new FileNode("C:\\Users\\Eric\\Documents"); // Base should eventually be a parameter
+		FileNode base = new FileNode("C:\\"); // Base should eventually be a parameter
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode(); // Base node in the tree
 		root.setUserObject(base);
 		createChildren(root);
@@ -106,6 +106,8 @@ public class DirPanel extends JPanel {
 			System.out.println("Can we read this? " + nodeInfo.getFile().canRead());
 			System.out.println("Is this a directory? " + nodeInfo.getFile().isDirectory());
 			System.out.println("The current drive is: " + currentDrive);
+			createChildren(selectedNode);
+
 		}
 	}
 }

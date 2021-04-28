@@ -1,5 +1,3 @@
-package cecs227project;
-
 import java.io.*;
 
 public class FileNode {

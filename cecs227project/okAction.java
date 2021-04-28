@@ -1,5 +1,3 @@
-package cecs227project;
-
 import java.awt.event.*;
 
 public class okAction implements ActionListener {
@@ -11,7 +9,6 @@ public class okAction implements ActionListener {
 
 
             case "Simple" -> System.out.println("You pressed Simple");
-
             //File tab
             case "Rename" -> System.out.println("You pressed Rename in the file tab");
             case "Copy" -> System.out.println("You pressed Copy in the file tab");

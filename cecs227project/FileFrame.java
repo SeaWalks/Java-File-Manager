@@ -1,5 +1,3 @@
-package cecs227project;
-
 import javax.swing.*;
 
 public class FileFrame extends JInternalFrame {
@@ -9,7 +7,9 @@ public class FileFrame extends JInternalFrame {
     public FileFrame(){
         
         JSplitPane splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new DirPanel(), new FilePanel());
-        splitpane.setDividerLocation(.6f);
+        splitpane.setOneTouchExpandable(true);
+        splitpane.setResizeWeight(.5);
+        
         splitpane.getLeftComponent().setSize((int)(splitpane.getWidth()*.5), splitpane.getHeight());
         this.setTitle("Current folder location goes here.");
         this.getContentPane().add(splitpane);
@@ -17,8 +17,9 @@ public class FileFrame extends JInternalFrame {
         this.setClosable(true);
         this.setIconifiable(true);
         this.setResizable(true);
-        this.setSize(200, 200);
+        this.setSize(800, 800);
         this.setVisible(true);
+      
         
     }
 
