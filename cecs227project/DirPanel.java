@@ -5,20 +5,29 @@ import java.awt.*;
 import java.io.*;
 
 public class DirPanel extends JPanel {
-	private static final long serialVersionUID = 1L;
 	private JScrollPane scrollPane;
 	private JTree tree;
 	private DefaultTreeModel treeModel;
 	private String currentDrive;
-	private File currentFile;
+	private File currentDirectory;
 
 	// Getters for active folders. Returns File objects.
 	public String getCurrentDrive() {
 		return currentDrive;
 	}
 
-	public File getCurrentFolder() {
-		return currentFile;
+	public String[] getCurrentDirectory() {
+		
+		File[] fileList = currentDirectory.listFiles();
+		String[] stringList = new String[(fileList.length)];
+		for (int i =0; i < fileList.length; i++){
+			stringList[i]=fileList[i].getAbsolutePath();
+		}
+		return stringList;
+	}
+
+	public JTree getTree() {
+		return tree;
 	}
 
 	public DirPanel() {
@@ -33,81 +42,65 @@ public class DirPanel extends JPanel {
 
 		tree = new JTree();
 		tree.addTreeSelectionListener(new DemoTreeSelectionListener());
+
 		FileNode base = new FileNode("C:\\"); // Base should eventually be a parameter
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode(); // Base node in the tree
+
+		currentDirectory = base.getFile();
 		root.setUserObject(base);
 		createChildren(root);
 		treeModel = new DefaultTreeModel(root);
 		tree.setModel(treeModel);
 	}
+	
+	void createChildren(DefaultMutableTreeNode node) {
 
-	// ONLY CALL THIS ON DIRECTORIES
-	private void createChildren(DefaultMutableTreeNode node) {
-
-		// Take in a parent node from the tree. Get the fileNode,
-		// get the Folder in the fileNode, list the files in the folder.
 		FileNode parentNode = (FileNode) node.getUserObject();
-		File parentFile = parentNode.getFile();
-		File[] files = parentFile.listFiles();
+		File parentFile = new File(parentNode.getFile().getPath());
+		File[] parentList = parentFile.listFiles();
 
-		// If there are no files (not a directory). This shouldn't happen
-		// because createChild is only called on Directories.
-		if (files == null)
-			return;
-
-		// If there are subfiles (is a directory)
-		for (File file : files) {
-			DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(new FileNode(file.getPath()));
-			node.add(childNode); // Add childNode to original tree.
-			File childFile = new File(file.getPath());
-
-			if (childFile.isDirectory()) {
-				System.out.println("Directory detected: " + childFile.getPath()); // This works
-				//FileNode secondaryFileNode = new FileNode(childFile.getPath());
-				
-				//gchildNode.setUserObject(secondaryFileNode);
-				File[] nextChild = childFile.listFiles();
-				if (nextChild != null) {
-					for (File nextFile : nextChild) {
-						System.out.println("Grandchildfile is: " + nextFile.getPath());
-				
-						DefaultMutableTreeNode gchildNode = new DefaultMutableTreeNode(new FileNode(nextFile.getPath()));
-					
-						childNode.add(gchildNode);
-					}
+		
+		if (parentList != null) {
+			for (File file : parentList) {
+				if (file.isDirectory() && (file.listFiles()!= null)) {
+					DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(new FileNode(file.getPath()));
+					node.add(childNode);
+					File childFile = new File(file.getPath());
+					File[] childList = childFile.listFiles();
+					if (childList != null) {
+						for (File file2 : childList) {
+							if (file2.isDirectory()) {
+								DefaultMutableTreeNode secondChildNode = new DefaultMutableTreeNode(
+										new FileNode(file2.getPath()));
+								childNode.add(secondChildNode);
+							}
+						}
+					}			
 				}
 			}
 		}
 	}
 
 	public class DemoTreeSelectionListener implements TreeSelectionListener {
-		// Can we have a filepath string outside with a getter for the currently
-		// selected path?
-		// getCurrentFile
-		// getCurrentDrive
 
 		@Override
 		public void valueChanged(TreeSelectionEvent e) {
-			System.out.println("You selected a node in the tree");
-			System.out.println(tree.getMinSelectionRow());
-			System.out.println(tree.getSelectionPath());
+
 			DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 			FileNode nodeInfo = (FileNode) selectedNode.getUserObject();
 
 			// If nodeinfo.getFile() is a directory load the next set of folders inside.
 			// We won't "unload" shit and its probably bad to
 
-			currentDrive = (nodeInfo.getFile().getAbsolutePath()).substring(0, 3);
-			currentFile = (nodeInfo.getFile());
-			// Debugging console log
-			System.out.println("Filepath is: " + nodeInfo.getFile().getAbsolutePath());
-			System.out.println("The file name is: " + nodeInfo.getFile().getName());
-			System.out.println("Does this file Exist? " + nodeInfo.getFile().exists());
-			System.out.println("Can we read this? " + nodeInfo.getFile().canRead());
-			System.out.println("Is this a directory? " + nodeInfo.getFile().isDirectory());
-			System.out.println("The current drive is: " + currentDrive);
-			createChildren(selectedNode);
-
+			File currentFile = new File(nodeInfo.getFile().getPath());
+			System.out.println("The currently selected file name is: " + currentFile.getAbsolutePath());
+			System.out.println("The selected file is directory: " + currentFile.isDirectory());
+			System.out.println("Number of Children: " + selectedNode.getChildCount());
+			if (currentFile.isDirectory()) {
+				currentDirectory = currentFile;
+				selectedNode.removeAllChildren();
+				createChildren(selectedNode);
+			}
 		}
 	}
 }

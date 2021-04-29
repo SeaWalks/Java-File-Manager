@@ -1,7 +1,4 @@
-
-
 import java.awt.event.*;
-import java.io.File;
 import java.awt.*;
 import javax.swing.*;
 
@@ -59,24 +56,16 @@ class App extends JFrame {
         mb.add(helpMenu);
         this.setJMenuBar(mb);
     }
-    private void buildToolbar() {
-        File[] paths;
-        paths = File.listRoots();
-        String[] s1 = new String[paths.length];
-        int i = 0;
-        for (File path : paths) {
-            s1[i] = path.toString();
-            i++;
-        }
-            JComboBox toolbarBox = new JComboBox<String>(s1); // wtf is this warning? Fix it eventually.
-            JButton toolbarDetails = new JButton("Details");
-            JButton toolbarSimple = new JButton("Simple");
-            toolbarDetails.addActionListener(new okActionListener());
-            toolbarSimple.addActionListener(new okActionListener());
-            toolbarPanel.add(toolbarBox);
-            toolbarPanel.add(toolbarDetails);
-            toolbarPanel.add(toolbarSimple);
-        
+    private void buildToolbar(){
+        String s1[] = { "Pancakes", "Waffles", "Syrup" };
+        JComboBox toolbarBox = new JComboBox<String>(s1); // wtf is this warning? Fix it eventually.
+        JButton toolbarDetails = new JButton("Details");
+        JButton toolbarSimple = new JButton("Simple");
+        toolbarDetails.addActionListener(new okActionListener());
+        toolbarSimple.addActionListener(new okActionListener());
+        toolbarPanel.add(toolbarBox);
+        toolbarPanel.add(toolbarDetails);
+        toolbarPanel.add(toolbarSimple);
     }
     
     public App() {
