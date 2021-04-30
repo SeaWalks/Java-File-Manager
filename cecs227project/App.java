@@ -92,7 +92,7 @@ class App extends JFrame {
         desktopPane.add(ff);
         // Draw the main panel;
         this.add(mainPanel);
-        this.setSize(690, 420);
+        this.setSize(800, 600);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
     }

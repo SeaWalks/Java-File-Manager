@@ -1,4 +1,5 @@
-import javax.swing.*;
+import javax.swing.JInternalFrame;
+import javax.swing.JSplitPane;
 
 public class FileFrame extends JInternalFrame {
     private static final long serialVersionUID = -4223439902442375914L;
@@ -10,12 +11,12 @@ public class FileFrame extends JInternalFrame {
         
         LeftPanel = new DirPanel();
         RightPanel = new FilePanel();
-        
+        LeftPanel.setFilePanel(RightPanel);
+
         splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, LeftPanel, RightPanel);
-        System.out.println(LeftPanel.getCurrentDirectory());
+        System.out.println("File frame's current directory: " + LeftPanel.getCurrentDirectory());
         //System.out.println("FileFrame gets current file: "+ LeftPanel.getCurrentFile().getPath());
         //Every time leftPanel updates, i need to update the right panel
-        System.out.println("Look1 the fileframe prints!" + LeftPanel.getCurrentDirectory());
         splitpane.setOneTouchExpandable(true);
         splitpane.setResizeWeight(.4);
         splitpane.getLeftComponent().setSize((int)(splitpane.getWidth()*.5), splitpane.getHeight());
@@ -25,11 +26,16 @@ public class FileFrame extends JInternalFrame {
         this.setClosable(true);
         this.setIconifiable(true);
         this.setResizable(true);
-        this.setSize(300, 300);
+        this.setSize(400, 300);
         this.setVisible(true);
     }
     public void RefreshFrame(){
         LeftPanel.revalidate();
         RightPanel.revalidate();
     }
+    
 }
+
+
+
+	
