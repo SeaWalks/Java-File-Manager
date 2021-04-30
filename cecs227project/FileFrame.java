@@ -12,7 +12,8 @@ public class FileFrame extends JInternalFrame {
         LeftPanel = new DirPanel();
         RightPanel = new FilePanel();
         LeftPanel.setFilePanel(RightPanel);
-
+        LeftPanel.setFileFrame(this);
+        setTitle(LeftPanel.getCurrentDirectory().getPath());
         splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, LeftPanel, RightPanel);
         System.out.println("File frame's current directory: " + LeftPanel.getCurrentDirectory());
         //System.out.println("FileFrame gets current file: "+ LeftPanel.getCurrentFile().getPath());
@@ -20,7 +21,7 @@ public class FileFrame extends JInternalFrame {
         splitpane.setOneTouchExpandable(true);
         splitpane.setResizeWeight(.4);
         splitpane.getLeftComponent().setSize((int)(splitpane.getWidth()*.5), splitpane.getHeight());
-        this.setTitle("Current folder location goes here.");
+        this.setTitle(LeftPanel.getCurrentDirectory().getPath());
         this.getContentPane().add(splitpane);
         this.setMaximizable(true);
         this.setClosable(true);
@@ -29,10 +30,7 @@ public class FileFrame extends JInternalFrame {
         this.setSize(400, 300);
         this.setVisible(true);
     }
-    public void RefreshFrame(){
-        LeftPanel.revalidate();
-        RightPanel.revalidate();
-    }
+  
     
 }
 

@@ -58,7 +58,7 @@ class App extends JFrame {
     }
     private void buildToolbar(){
         String s1[] = { "Pancakes", "Waffles", "Syrup" };
-        JComboBox toolbarBox = new JComboBox<String>(s1); // wtf is this warning? Fix it eventually.
+        JComboBox<String> toolbarBox = new JComboBox<String>(s1); // wtf is this warning? Fix it eventually.
         JButton toolbarDetails = new JButton("Details");
         JButton toolbarSimple = new JButton("Simple");
         toolbarDetails.addActionListener(new okActionListener());
@@ -88,7 +88,7 @@ class App extends JFrame {
         mainPanel.add(statusBar, BorderLayout.SOUTH);
         mainPanel.add(desktopPane, BorderLayout.CENTER);
         FileFrame ff = new FileFrame();
-        
+        //FILEFRAME->DIRPANEL->
         desktopPane.add(ff);
         // Draw the main panel;
         this.add(mainPanel);
