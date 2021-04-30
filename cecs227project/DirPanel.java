@@ -27,31 +27,25 @@ public class DirPanel extends JPanel {
 	public File getCurrentDirectory() {
 		return currentDirectory;
 	}
-		/////////////BETA TESTING SETTERS///////////////
-	public void setCurrentDirectory(File file){
-		currentDirectory = file;
-	}
-	////////////////////////////////////////////////
+
 	public JTree getTree() {
 		return tree;
 	}
-
-	public DirPanel() {
-		buildTree();
+	
+	public DirPanel(File base) {
+		FileNode root = new FileNode(base.getPath());
+		buildTree(root);
 		scrollPane = new JScrollPane();
 		scrollPane.setViewportView(tree);
 		this.setLayout(new BorderLayout());
 		this.add(scrollPane, BorderLayout.CENTER);
 	}
 
-	private void buildTree() {
+	private void buildTree(FileNode base) {
 		
 		tree = new JTree();
-		tree.addTreeSelectionListener(new DemoTreeSelectionListener()); //FIGURE THIS SHIT OUT
-		
-		FileNode base = new FileNode("C:\\"); // Base should eventually be a parameter
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode(); // Base node in the tree
-		
+		tree.addTreeSelectionListener(new DemoTreeSelectionListener()); 
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode(); 
 		currentDirectory = base.getFile();
 		root.setUserObject(base);
 		createChildren(root);
@@ -97,6 +91,7 @@ public class DirPanel extends JPanel {
 			File currentFile = new File(nodeInfo.getFile().getPath());
 			//Update RightPanel
 			RightPanel.FillList(currentFile);
+			RightPanel.setShowDetails(true);
 			BigFrame.setTitle(currentFile.getPath());
 			/*Debugging tools
 			System.out.println("The currently selected file name is: " + currentFile.getAbsolutePath());
@@ -108,7 +103,7 @@ public class DirPanel extends JPanel {
 				selectedNode.removeAllChildren();
 				createChildren(selectedNode);
 				//Debugging tools:
-				System.out.println("DirPanel's current directory: "+ currentDirectory.getName());
+				//System.out.println("DirPanel's current directory: "+ currentDirectory.getName());
 			}
 		}
 	}

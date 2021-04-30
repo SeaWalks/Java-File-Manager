@@ -3,10 +3,31 @@ import java.awt.*;
 import javax.swing.*;
 
 /******************
-Current status: 
-> Basic GUI stuff done (menus, toolbars)
-> Internal windows added
->SplitPane added to internal windows
+ToDo: 
+1) FilePanel
+	Implement Drag and drop
+	Fix formatting
+3) Toolbar
+	ComboBox -> Just need to link (use FilePanel.setShowDetails)
+	Simple   -> Just need to link (use FilePanel.setShowDetails)
+	Details  -> Just need to link (use FilePanel.setShowDetails)
+4) RightClick Menu
+	Rename   -> Just need to test and link. (Use FilePanel.renameFile)
+	Copy 
+	Paste
+	Delete   -> Just need to test and lik. (Use FilePanel.deleteFile)
+
+5) Menubar Items
+	Rename   -> Just need to test and link. (Use FilePanel.renameFile)
+	Copy 
+	Delete   -> Just need to test and link. (Use FilePanel.deleteFile)
+	Run      -> Just need to link (use FilePanel.runFile)
+
+5) Fix "New" button to spawn at a specific location- (0,100)
+	FileFrame edited to take in parameters. When you create a new FileFrame
+	in the buttonjust add in the parameters, ex new ff(0,100) or whatever
+
+2 warnings to fix, both from professors code. 
 *******************/
 
 class App extends JFrame {
@@ -20,7 +41,6 @@ class App extends JFrame {
     JButton ok;
     JButton cancel;
     JLabel statusBar;
-
 
     private void buildMenuBar() {
         mb = new JMenuBar();
@@ -57,6 +77,7 @@ class App extends JFrame {
         this.setJMenuBar(mb);
     }
     private void buildToolbar(){
+        toolbarPanel.setLayout(new FlowLayout());
         String s1[] = { "Pancakes", "Waffles", "Syrup" };
         JComboBox<String> toolbarBox = new JComboBox<String>(s1); // wtf is this warning? Fix it eventually.
         JButton toolbarDetails = new JButton("Details");
@@ -84,10 +105,9 @@ class App extends JFrame {
         // Build Panels
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(toolbarPanel, BorderLayout.NORTH);
-        toolbarPanel.setLayout(new FlowLayout());
         mainPanel.add(statusBar, BorderLayout.SOUTH);
         mainPanel.add(desktopPane, BorderLayout.CENTER);
-        FileFrame ff = new FileFrame();
+        FileFrame ff = new FileFrame("C:\\",0,0);
         //FILEFRAME->DIRPANEL->
         desktopPane.add(ff);
         // Draw the main panel;

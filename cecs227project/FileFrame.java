@@ -1,3 +1,5 @@
+import java.io.File;
+
 import javax.swing.JInternalFrame;
 import javax.swing.JSplitPane;
 
@@ -7,9 +9,12 @@ public class FileFrame extends JInternalFrame {
     private JSplitPane splitpane;
     private DirPanel LeftPanel;
     private FilePanel RightPanel;
-    public FileFrame(){
-        
-        LeftPanel = new DirPanel();
+    //Now takes in arguments for the ROOT FOLDER and LOCATION
+    public FileFrame(String rootFolder, int xPosition, int yPosition){
+        System.out.println("rootFolder in fileframe is "+ rootFolder);
+        File base = new File(rootFolder);
+        System.out.println("base in fileframe is" + base.getName());
+        LeftPanel = new DirPanel(base);
         RightPanel = new FilePanel();
         LeftPanel.setFilePanel(RightPanel);
         LeftPanel.setFileFrame(this);
@@ -29,6 +34,8 @@ public class FileFrame extends JInternalFrame {
         this.setResizable(true);
         this.setSize(400, 300);
         this.setVisible(true);
+        this.setLocation(xPosition,yPosition);
+       
     }
   
     
