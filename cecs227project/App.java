@@ -27,6 +27,8 @@ ToDo:
 	FileFrame edited to take in parameters. When you create a new FileFrame
 	in the buttonjust add in the parameters, ex new ff(0,100) or whatever
 
+Then we are done, just organize/clean up code and commenting!!!!
+
 2 warnings to fix, both from professors code. 
 *******************/
 
