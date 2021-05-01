@@ -180,7 +180,6 @@ public class FilePanel extends JPanel {
         FillList(selectedDirectory); // Redraw the list after changing the boolean
     }
 
-
     class MyDropTarget extends DropTarget {
         /**************************************************************************
          * 
@@ -201,8 +200,12 @@ public class FilePanel extends JPanel {
                     // individual file names and store in String[]
                     String[] next = temp.split("\\n");
                     // add the strings to the listmodel
-                    for (int i = 0; i < next.length; i++)
+                    for (int i = 0; i < next.length; i++) {
                         model.addElement(next[i]);
+                        setCopiedFile(new File(next[i]));
+                        File pastedFile = new File(selectedDirectory.getPath() + "\\" + copiedFile.getName());
+                        pasteFile(pastedFile.getPath());
+                    }
                 } else { // then if not String, Files are assumed
                     result = (List) evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
                     // process the input
