@@ -13,13 +13,13 @@ ToDo:
 	Details  -> Just need to link (use FilePanel.setShowDetails)
 4) RightClick Menu
 	Rename   -> Just need to test and link. (Use FilePanel.renameFile)
-	Copy 
-	Paste
+	Copy     -> Just need to test and link. (Use FilePanel.setCopiedFile)
+	Paste    -> Just need to test and link. (Use FilePanel.pasteFile)
 	Delete   -> Just need to test and lik. (Use FilePanel.deleteFile)
 
 5) Menubar Items
 	Rename   -> Just need to test and link. (Use FilePanel.renameFile)
-	Copy 
+	Copy     -> Just need to test and link. (Use FilePanel.setCopiedFile)
 	Delete   -> Just need to test and link. (Use FilePanel.deleteFile)
 	Run      -> Just need to link (use FilePanel.runFile)
 
@@ -81,7 +81,7 @@ class App extends JFrame {
     private void buildToolbar(){
         toolbarPanel.setLayout(new FlowLayout());
         String s1[] = { "Pancakes", "Waffles", "Syrup" };
-        JComboBox<String> toolbarBox = new JComboBox<String>(s1); // wtf is this warning? Fix it eventually.
+        JComboBox<String> toolbarBox = new JComboBox<String>(s1); 
         JButton toolbarDetails = new JButton("Details");
         JButton toolbarSimple = new JButton("Simple");
         toolbarDetails.addActionListener(new okActionListener());
@@ -96,7 +96,6 @@ class App extends JFrame {
         mainPanel = new JPanel();
         toolbarPanel = new JPanel();
         desktopPane = new JDesktopPane();
-        
         statusBar = new JLabel("String argument for Drive information should be passed here.");
     }
 
@@ -109,10 +108,9 @@ class App extends JFrame {
         mainPanel.add(toolbarPanel, BorderLayout.NORTH);
         mainPanel.add(statusBar, BorderLayout.SOUTH);
         mainPanel.add(desktopPane, BorderLayout.CENTER);
+        //FILEFRAME TAKES IN ARGUMENTS NOW
         FileFrame ff = new FileFrame("C:\\",0,0);
-        //FILEFRAME->DIRPANEL->
         desktopPane.add(ff);
-        // Draw the main panel;
         this.add(mainPanel);
         this.setSize(800, 600);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

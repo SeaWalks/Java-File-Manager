@@ -1,6 +1,9 @@
 import javax.swing.*;
 import java.awt.Desktop;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.awt.*;
 import java.awt.dnd.*;
@@ -15,8 +18,7 @@ public class FilePanel extends JPanel {
     private DefaultListModel<String> model = new DefaultListModel<>();
     private JList<String> myList = new JList<>();
     private File[] fileList;
-    private File selectedFile;
-    private File selectedDirectory;
+    private File selectedFile, selectedDirectory, copiedFile;
     private Boolean showDetails;
 
     public FilePanel() {
@@ -57,7 +59,7 @@ public class FilePanel extends JPanel {
         fileList = file.listFiles();
         model.clear();
         myList.removeAll();
-        
+        myList.setFont(new Font("TimesRoman", Font.PLAIN, 18));
         // Debugg test: System.out.println("Show details is" + showDetails);
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         if (showDetails) {
@@ -117,6 +119,30 @@ public class FilePanel extends JPanel {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+    }
+
+    public void setCopiedFile(File file) {
+        copiedFile = file;
+    }
+
+    public void pasteFile(File newFile) throws IOException {
+
+        try {
+            FileInputStream ins = new FileInputStream(copiedFile);
+            FileOutputStream outs = new FileOutputStream(newFile);
+            byte[] buffer = new byte[1024];
+            int length;
+
+            while ((length = ins.read(buffer)) > 0) {
+                outs.write(buffer, 0, length);
+            }
+            ins.close();
+            outs.close();
+            System.out.println("File copied successfully.");
+        } catch (FileNotFoundException ioe) {
+            ioe.printStackTrace();
+        }
+
     }
 
     public void setShowDetails(Boolean toggle) {
