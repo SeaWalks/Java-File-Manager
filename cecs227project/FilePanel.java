@@ -21,6 +21,7 @@ public class FilePanel extends JPanel {
     private File selectedFile, selectedDirectory, copiedFile;
     private Boolean showDetails;
 
+
     public FilePanel() {
         showDetails = false;
         scrollPane.setViewportView(myList);
@@ -35,11 +36,11 @@ public class FilePanel extends JPanel {
             public void mouseClicked(MouseEvent me) {
                 if (me.getClickCount() == 1) {
                     File selectedFile = fileList[myList.getSelectedIndex()];
-                    System.out.println("Selected file is: " + selectedFile.getPath());
+                    System.out.println("Selected file is: " + selectedFile.getName());
+                    //runFile(selectedFile);
                 }
                 if (me.getClickCount() == 2) {
-                    System.out.println("You double clicked on " + myList.getSelectedValue());
-                    System.out.println("Attempting to open..." + myList.getSelectedIndex());
+                    File selectedFile = fileList[myList.getSelectedIndex()];
                     runFile(selectedFile);
                 }
             }
@@ -57,27 +58,50 @@ public class FilePanel extends JPanel {
     public void FillList(File file) {
         selectedDirectory = file;
         fileList = file.listFiles();
+        File[] sorted = new File[fileList.length];
+        int counter = 0;
+        for (int i = 0; i < fileList.length; i++) {
+            if (fileList[i].isDirectory()) {
+                sorted[counter] = fileList[i];
+                counter++;// Only increment counter when something is added
+            }
+        }
+        for (int i = 0; i < fileList.length; i++) {
+            if (!fileList[i].isDirectory()) {
+                sorted[counter] = fileList[i];
+                counter++;// Only increment counter when something is added
+            }
+        }
+        fileList = sorted;
+
         model.clear();
         myList.removeAll();
-        myList.setFont(new Font("TimesRoman", Font.PLAIN, 18));
+        myList.setFont(new Font("MONOSPACED", Font.PLAIN, 12));
         // Debugg test: System.out.println("Show details is" + showDetails);
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+
         if (showDetails) {
-            for (File subfile : fileList) {
+            for (File subfile : sorted) {
                 if (!subfile.isDirectory()) {
-                    model.addElement(subfile.getName() + "     File Size:" + subfile.length()
-                            + "     Date Last Modified: " + sdf.format(subfile.lastModified()));
+                    model.addElement(getDetails(subfile));
                 } else {
                     model.addElement(subfile.getName());
                 }
             }
         } else {
-            for (File subfile : fileList) {
+            for (File subfile : sorted) {
                 model.addElement(subfile.getName());
             }
         }
     }
+    private String getDetails(File file){
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        return String.format("%-40s %-20s %-20s", 
+        file.getName(), 
+        (file.length()/1024)+"KB", 
+        sdf.format(file.lastModified()));
+    }
 
+     
     // Takes in a whole ass pathname to rename the selected file.
     // PATHNAME MUST BE IN THE SAME DIRECTORY OR THINGS R FUK
     public void renameFile(String pathname) {

@@ -11,9 +11,7 @@ public class FileFrame extends JInternalFrame {
     private FilePanel RightPanel;
     //Now takes in arguments for the ROOT FOLDER and LOCATION
     public FileFrame(String rootFolder, int xPosition, int yPosition){
-        System.out.println("rootFolder in fileframe is "+ rootFolder);
         File base = new File(rootFolder);
-        System.out.println("base in fileframe is" + base.getName());
         LeftPanel = new DirPanel(base);
         RightPanel = new FilePanel();
         LeftPanel.setFilePanel(RightPanel);
@@ -24,7 +22,7 @@ public class FileFrame extends JInternalFrame {
         //System.out.println("FileFrame gets current file: "+ LeftPanel.getCurrentFile().getPath());
         //Every time leftPanel updates, i need to update the right panel
         splitpane.setOneTouchExpandable(true);
-        splitpane.setResizeWeight(.4);
+        splitpane.setResizeWeight(.3);
         splitpane.getLeftComponent().setSize((int)(splitpane.getWidth()*.5), splitpane.getHeight());
         this.setTitle(LeftPanel.getCurrentDirectory().getPath());
         this.getContentPane().add(splitpane);
@@ -32,7 +30,7 @@ public class FileFrame extends JInternalFrame {
         this.setClosable(true);
         this.setIconifiable(true);
         this.setResizable(true);
-        this.setSize(400, 300);
+        this.setSize(600, 450);
         this.setVisible(true);
         this.setLocation(xPosition,yPosition);
        

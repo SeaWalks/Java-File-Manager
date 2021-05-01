@@ -112,7 +112,7 @@ class App extends JFrame {
         FileFrame ff = new FileFrame("C:\\",0,0);
         desktopPane.add(ff);
         this.add(mainPanel);
-        this.setSize(800, 600);
+        this.setSize(1200, 800);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
     }
