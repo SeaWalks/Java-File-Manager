@@ -18,7 +18,6 @@ public class FileFrame extends JInternalFrame {
         LeftPanel.setFileFrame(this);
         setTitle(LeftPanel.getCurrentDirectory().getPath());
         splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, LeftPanel, RightPanel);
-        System.out.println("File frame's current directory: " + LeftPanel.getCurrentDirectory());
         //System.out.println("FileFrame gets current file: "+ LeftPanel.getCurrentFile().getPath());
         //Every time leftPanel updates, i need to update the right panel
         splitpane.setOneTouchExpandable(true);

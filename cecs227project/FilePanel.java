@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.dnd.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.awt.event.*;
 import java.awt.datatransfer.*;
 
@@ -20,7 +21,6 @@ public class FilePanel extends JPanel {
     private File[] fileList;
     private File selectedFile, selectedDirectory, copiedFile;
     private Boolean showDetails;
-
 
     public FilePanel() {
         showDetails = false;
@@ -37,7 +37,7 @@ public class FilePanel extends JPanel {
                 if (me.getClickCount() == 1) {
                     File selectedFile = fileList[myList.getSelectedIndex()];
                     System.out.println("Selected file is: " + selectedFile.getName());
-                    //runFile(selectedFile);
+                    // runFile(selectedFile);
                 }
                 if (me.getClickCount() == 2) {
                     File selectedFile = fileList[myList.getSelectedIndex()];
@@ -93,15 +93,13 @@ public class FilePanel extends JPanel {
             }
         }
     }
-    private String getDetails(File file){
+
+    private String getDetails(File file) {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        return String.format("%-40s %-20s %-20s", 
-        file.getName(), 
-        (file.length()/1024)+"KB", 
-        sdf.format(file.lastModified()));
+        return String.format("%-40s %-20s %20s", file.getName(), (file.length() / 1024) + "KB",
+                sdf.format(file.lastModified()));
     }
 
-     
     // Takes in a whole ass pathname to rename the selected file.
     // PATHNAME MUST BE IN THE SAME DIRECTORY OR THINGS R FUK
     public void renameFile(String pathname) {
@@ -112,7 +110,7 @@ public class FilePanel extends JPanel {
         } else {
             System.out.println("Something went wrong renaming the file.");
         }
-        // Slightly better waay, only requires the user to type in only the
+        // Slightly better way, only requires the user to type in only the
         // new file name without the directory path stuff.
         /*
          * File betterFile = new File(selectedFile.getParent()+pathname); if
@@ -149,8 +147,16 @@ public class FilePanel extends JPanel {
         copiedFile = file;
     }
 
-    public void pasteFile(File newFile) throws IOException {
-
+    public void pasteFile(String s) throws IOException {
+        /*
+         * Basically the way this works is that we have a file caleld copiedFile which
+         * is the file to be copied. We then pass a file into this method, which will be
+         * the "place" this will be created. This will typically be
+         * selectedDirectory.getPath()+"\\"+copiedFile.getName() . However, the copy
+         * dialogue box requires the user to specify a directory, so thats why this
+         * takes in a string.
+         */
+        File newFile = new File(s);
         try {
             FileInputStream ins = new FileInputStream(copiedFile);
             FileOutputStream outs = new FileOutputStream(newFile);
@@ -174,11 +180,7 @@ public class FilePanel extends JPanel {
         FillList(selectedDirectory); // Redraw the list after changing the boolean
     }
 
-    /*
-     * Drag and drop bullshit, we are close to finishing this though maybe 80% of
-     * the Drag and drop shit is implemented here. just need to fix the professors
-     * code and implement the copying methods
-     */
+
     class MyDropTarget extends DropTarget {
         /**************************************************************************
          * 
@@ -189,8 +191,7 @@ public class FilePanel extends JPanel {
                 // types of events accepted
                 evt.acceptDrop(DnDConstants.ACTION_COPY);
                 // storage to hold the drop data for processing
-                // List result = new ArrayList();
-                ArrayList<Object> result = new ArrayList<Object>();
+                List result = new ArrayList();
                 // what is being dropped? First, Strings are processed
                 if (evt.getTransferable().isDataFlavorSupported(DataFlavor.stringFlavor)) {
                     String temp = (String) evt.getTransferable().getTransferData(DataFlavor.stringFlavor);
@@ -202,30 +203,23 @@ public class FilePanel extends JPanel {
                     // add the strings to the listmodel
                     for (int i = 0; i < next.length; i++)
                         model.addElement(next[i]);
-                    /*
-                     * next[i] *should* be a String that gives a filepath to a new file that needs
-                     * to be copied into the current directory, given by selectedDirectory.
-                     * Implement copy behavior here.
-                     */
                 } else { // then if not String, Files are assumed
-                    result = (ArrayList) evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor); // what
-                                                                                                               // the
-                                                                                                               // fuck
-                                                                                                               // professor
+                    result = (List) evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
                     // process the input
                     for (Object o : result) {
-                        System.out.println(o.toString());
+                        // System.out.println(o.toString()+"MOM WE DID IT");
                         model.addElement(o.toString());
-                        /*
-                         * Object o *should* be a File object that needs to be copied into the current
-                         * directory, given by selectedDirectory. Implement copy behavior here. I think.
-                         */
+                        setCopiedFile(new File(o.toString()));
+                        File pastedFile = new File(selectedDirectory.getPath() + "\\" + copiedFile.getName());
+                        pasteFile(pastedFile.getPath());
                     }
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
+
             }
         }
 
     }
+
 }

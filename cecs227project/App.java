@@ -6,18 +6,17 @@ import javax.swing.*;
 ToDo: 
 1) FilePanel
 	Implement Drag and drop
-	Fix formatting
-3) Toolbar
+2) Toolbar
 	ComboBox -> Just need to link (use FilePanel.setShowDetails)
 	Simple   -> Just need to link (use FilePanel.setShowDetails)
 	Details  -> Just need to link (use FilePanel.setShowDetails)
-4) RightClick Menu
+3) RightClick Menu
 	Rename   -> Just need to test and link. (Use FilePanel.renameFile)
 	Copy     -> Just need to test and link. (Use FilePanel.setCopiedFile)
 	Paste    -> Just need to test and link. (Use FilePanel.pasteFile)
 	Delete   -> Just need to test and lik. (Use FilePanel.deleteFile)
 
-5) Menubar Items
+4) Menubar Items
 	Rename   -> Just need to test and link. (Use FilePanel.renameFile)
 	Copy     -> Just need to test and link. (Use FilePanel.setCopiedFile)
 	Delete   -> Just need to test and link. (Use FilePanel.deleteFile)
