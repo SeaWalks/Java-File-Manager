@@ -5,20 +5,20 @@ import javax.swing.*;
 /******************
 ToDo: 
 1) FilePanel
-	Implement Drag and drop
+	Maybe add icons if I feel like it
 2) Toolbar
 	ComboBox -> Just need to link (use FilePanel.setShowDetails)
 	Simple   -> Just need to link (use FilePanel.setShowDetails)
 	Details  -> Just need to link (use FilePanel.setShowDetails)
 3) RightClick Menu
 	Rename   -> Just need to test and link. (Use FilePanel.renameFile)
-	Copy     -> Just need to test and link. (Use FilePanel.setCopiedFile)
-	Paste    -> Just need to test and link. (Use FilePanel.pasteFile)
-	Delete   -> Just need to test and lik. (Use FilePanel.deleteFile)
+	Copy     -> Just need to link. (Use FilePanel.setCopiedFile)
+	Paste    -> Just need to link. (Use FilePanel.pasteFile)
+	Delete   -> Just need to test and link. (Use FilePanel.deleteFile)
 
 4) Menubar Items
 	Rename   -> Just need to test and link. (Use FilePanel.renameFile)
-	Copy     -> Just need to test and link. (Use FilePanel.setCopiedFile)
+	Copy     -> Just need to link. (Use FilePanel.setCopiedFile)
 	Delete   -> Just need to test and link. (Use FilePanel.deleteFile)
 	Run      -> Just need to link (use FilePanel.runFile)
 
@@ -28,7 +28,7 @@ ToDo:
 
 Then we are done, just organize/clean up code and commenting!!!!
 
-2 warnings to fix, both from professors code. 
+3 warnings to fix from professors code. Arraylists need to be parameterized 
 *******************/
 
 class App extends JFrame {
