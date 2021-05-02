@@ -4,6 +4,8 @@ import java.awt.event.*;
 import java.awt.*;
 import java.io.File;
 import javax.swing.*;
+import javax.swing.event.AncestorListener;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /******************
  ToDo:
@@ -108,7 +110,7 @@ class App extends JFrame {
         topPanel.add(toolbarBox);
         topPanel.add(details);
         topPanel.add(simple);
-        toolbarBox.addActionListener(new toolbarBoxAction());
+       // toolbarBox.addActionListener(new toolbarBoxAction());
         details.addActionListener(new DetailsAction());
         simple.addActionListener(new SimpleAction());
     }
@@ -116,9 +118,9 @@ class App extends JFrame {
     private void buildStatusBar(String currentDrive){
         statusBar.removeAll();
         File file = new File(currentDrive);
-        int usedSpace = (int) (file.getUsableSpace()/(1024 * 1024 * 1024));
+        int freeSpace = (int) (file.getUsableSpace()/(1024 * 1024 * 1024));
         int totalSpace = (int) (file.getTotalSpace()/(1024 * 1024 * 1024));
-        int freeSpace = totalSpace - usedSpace;
+        int usedSpace = totalSpace - freeSpace;
         JLabel status = new JLabel("Current Drive: " + currentDrive + " Free Space: " + freeSpace + "GB" + " Used Space: " + usedSpace + "GB" + " Total Space: " + totalSpace + "GB");
         statusBar.add(status);
         mainPanel.add(statusBar, BorderLayout.SOUTH);
@@ -149,7 +151,8 @@ class App extends JFrame {
         mainPanel.add(topPanel, BorderLayout.NORTH);
         mainPanel.add(desktopPane, BorderLayout.CENTER);
         //FILEFRAME TAKES IN ARGUMENTS NOW
-        FileFrame ff = new FileFrame("C:\\",0,0);
+        ff = new FileFrame("C:\\",0,0);
+        ff.addAncestorListener(new currentFrameAction());
         desktopPane.add(ff);
         this.add(mainPanel);
         this.setSize(800, 600);
@@ -157,38 +160,39 @@ class App extends JFrame {
         this.setVisible(true);
     }
 
-    public class toolbarBoxAction implements ActionListener{
+    public class currentFrameAction implements AncestorListener{  //COMPLETE
+       @Override
+        public void actionPerformed(ActionEvent e){
+
+            //String s = (String) toolbarBox.getSelectedItem();
+            //System.out.println("you selected " + s);
+            //buildStatusBar(s);
+            //mainPanel.revalidate();
+        }
+   }
+
+    private class SimpleAction implements ActionListener { //COMPLETE
         @Override
         public void actionPerformed(ActionEvent e){
-            String s = (String) toolbarBox.getSelectedItem();
-            System.out.println("you selected " + s);
-            buildStatusBar(s);
-            mainPanel.revalidate();
+            ff.getRightPanel().setShowDetails(false);
         }
     }
 
-    private class SimpleAction implements ActionListener {
+    private class DetailsAction implements ActionListener { //COMPLETE
         @Override
         public void actionPerformed(ActionEvent e){
-            System.out.println("You pressed Simple");
-        }
-    }
-
-    private class DetailsAction implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e){
-            //FilePanel
+            ff = (FileFrame) desktopPane.getSelectedFrame();
+            ff.getRightPanel().setShowDetails(true);
         }
     }
 
     private class RenameAction implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e){
-
-           // DataBack dbdlg = new DataBack();
-            //(DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-            //dbdlg.setFromTextField("This is supposed to be the file name u want to rename");//Chnage to file name
-           // dbdlg.setVisible(true);
+            DataBack dbdlg = new DataBack();
+            System.out.println(ff.getRightPanel().getFile() + "hi");
+            dbdlg.setFromTextField("hiu");//Chnage to file name
+            dbdlg.setVisible(true);
            // String toField = dbdlg.getToTextField();
 
         }
@@ -197,14 +201,27 @@ class App extends JFrame {
     private class CopyAction implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e){
-            System.out.println("You pressed Copy");
+            ff.getRightPanel().setCopiedFile(ff.getRightPanel().getFile());
         }
     }
 
     private class DeleteAction implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e){
-            System.out.println("You pressed Delete");
+
+          System.out.println("Delete: " + ff.getRightPanel().getFile());
+          deleteDLG dlg = new deleteDLG();
+
+          dlg.setFileNameTextField(ff.getRightPanel().getFile().getPath());
+          dlg.setVisible(true);
+          File myFile = new File(ff.getRightPanel().getFile().getPath());
+          if(myFile.delete()){
+              System.out.println("Deleted Succesfully");
+          }
+          else{
+              System.out.println("Not succedsgulk");
+          }
+
         }
     }
 
@@ -215,36 +232,40 @@ class App extends JFrame {
         }
     }
 
-    private class ExitAction implements ActionListener {
+    private class ExitAction implements ActionListener { //COMPLETE
         @Override
         public void actionPerformed(ActionEvent e){
             System.exit(0);
         }
     }
 
-    private class ExpandBranchAction implements ActionListener {
+    private class ExpandBranchAction implements ActionListener {//COMPLETE
         @Override
         public void actionPerformed(ActionEvent e){
-            //ff.getLeftPanel().expandTree();
+            ff.getLeftPanel().expandTree();
+
         }
     }
 
-    private class CollpaseBranchAction implements ActionListener {
+    private class CollpaseBranchAction implements ActionListener {//COMPLETE
         @Override
         public void actionPerformed(ActionEvent e){
-            // ff.getLeftPanel().collapseTree();
+            ff.getLeftPanel().collapseTree();
         }
     }
 
-    private class NewAction implements ActionListener {//NEEDS TO BE FIXED
+    private class NewAction implements ActionListener {//ALMSOT COMPLETE
         @Override
         public void actionPerformed(ActionEvent e){
-            // FileFrame ff = new FileFrame();
-            // desktopPane.add(ff);
+            String s = (String) toolbarBox.getSelectedItem();
+            FileFrame ff = new FileFrame(s, 0, 100);
+            desktopPane.add(ff);
+
+            //STATUS BAR MIGHT NEED TO UPDATE BASED ON PANEL IN FOCUS
         }
     }
 
-    private class CascadeAction implements ActionListener {
+    private class CascadeAction implements ActionListener { // COMPLETE
         @Override
         public void actionPerformed(ActionEvent e){
             JInternalFrame[] cascade = desktopPane.getAllFrames();
@@ -259,7 +280,7 @@ class App extends JFrame {
         }
     }
 
-    private class HelpAction implements ActionListener {
+    private class HelpAction implements ActionListener {//COMPLETE
         @Override
         public void actionPerformed(ActionEvent e){
             creativeHelpDLG dlg = new creativeHelpDLG();
@@ -267,7 +288,7 @@ class App extends JFrame {
         }
     }
 
-    private class AboutAction implements ActionListener {
+    private class AboutAction implements ActionListener {//COMPLETE
         @Override
         public void actionPerformed(ActionEvent e){
             Aboutdlg dlg = new Aboutdlg();
@@ -275,3 +296,4 @@ class App extends JFrame {
         }
     }
 }
+
