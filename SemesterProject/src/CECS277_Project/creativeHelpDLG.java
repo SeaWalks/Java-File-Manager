@@ -3,15 +3,16 @@ package CECS277_Project;
 import javax.swing.*;
 import java.awt.event.*;
 
-public class Aboutdlg extends JDialog {
+public class creativeHelpDLG extends JDialog {
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = -1417250597309717826L;
+	private static final long serialVersionUID = 4648476112079016265L;
 	private JPanel contentPane;
     private JButton buttonOK;
+    private JTextField httpsWwwYoutubeComTextField;
 
-    public Aboutdlg() {
+    public creativeHelpDLG() {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
@@ -27,5 +28,6 @@ public class Aboutdlg extends JDialog {
         // add your code here
         dispose();
     }
-}
 
+
+}
