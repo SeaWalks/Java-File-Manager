@@ -229,8 +229,33 @@ class App extends JFrame {
 	
 	private class MyMouseListener extends MouseAdapter {
 		@Override
-		public void mouseClicked(MouseEvent e) {
-			System.out.println("CLICK DETECTED IN APP.java");
+		public void mouseClicked(MouseEvent me) {
+			if (selectedDirectory != null) {
+				if (me.getClickCount() == 1 && (me.getButton() == 1) && myList.locationToIndex(me.getPoint()) != -1) {
+					selectedFile = fileList[myList.getSelectedIndex()];
+					System.out.println("Selected file is: " + selectedFile.getName());
+				}
+				// SOMEHOW GET THIS SHIT TO WORK IN APP
+				if (me.getClickCount() == 1 && (me.getButton() == 3) && myList.locationToIndex(me.getPoint()) != -1) {
+					myList.setSelectedIndex(myList.locationToIndex(me.getPoint()));
+					selectedFile = fileList[myList.locationToIndex(me.getPoint())];
+					System.out.println("We right clicked on " + selectedFile.getName());
+					System.out.println("Selected file is: " + selectedFile.getName());
+					buildpopMenu();
+					popMenu.show(me.getComponent(), me.getX(), me.getY());
+				}
+				if (me.getClickCount() == 2 && (me.getButton() == 1) && myList.locationToIndex(me.getPoint()) != -1) {
+					selectedFile = fileList[myList.getSelectedIndex()];
+					runFile(selectedFile);
+				}
+
+				System.out.println(
+						"Current Drive, based on FilePanel.java " + selectedDirectory.getPath().substring(0, 2));
+				/*
+				 * Why teh fuck would i think this would work App genesis = new App();
+				 * genesis.buildStatusBar(selectedDirectory.getPath().substring(0,2));
+				 */
+			}
 		}
 	}
 	private class SimpleAction implements ActionListener { // COMPLETE
