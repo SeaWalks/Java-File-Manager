@@ -106,7 +106,7 @@ public class DirPanel extends JPanel {
 	}
 
 	/*******************************/
-	/*********** LISTENER ************/
+	/*********** LISTENER **********/
 	/*******************************/
 
 	public class DemoTreeSelectionListener implements TreeSelectionListener {

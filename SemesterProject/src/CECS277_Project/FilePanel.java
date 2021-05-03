@@ -33,20 +33,19 @@ public class FilePanel extends JPanel {
 		myList.addKeyListener(new keyListener());
 		add(scrollPane);
 	}
-	
 
 	public void FillList(File file) {
 		selectedDirectory = file;
 		fileList = file.listFiles();
 		File[] sorted = new File[fileList.length];
 		int counter = 0;
-		for (int i = 0; i < fileList.length; i++) { //Add folders First
+		for (int i = 0; i < fileList.length; i++) { // Add folders First
 			if (fileList[i].isDirectory()) {
 				sorted[counter] = fileList[i];
 				counter++;// Only increment counter when something is added
 			}
 		}
-		for (int i = 0; i < fileList.length; i++) { //Add files last
+		for (int i = 0; i < fileList.length; i++) { // Add files last
 			if (!fileList[i].isDirectory()) {
 				sorted[counter] = fileList[i];
 				counter++;// Only increment counter when something is added
@@ -56,7 +55,7 @@ public class FilePanel extends JPanel {
 		model.clear();
 		myList.removeAll();
 		myList.setFont(new Font("MONOSPACED", Font.PLAIN, 12));
-		
+
 		if (showDetails) {
 			for (File subfile : sorted) {
 				if (!subfile.isDirectory()) {
@@ -71,12 +70,11 @@ public class FilePanel extends JPanel {
 			}
 		}
 	}
-	
 
 	/*******************************/
-	/*******FILE OPERATIONS*********/
+	/******* FILE OPERATIONS *********/
 	/*******************************/
-	
+
 	public void deleteFile() {
 		if (selectedFile.delete()) {
 			System.out.println("Deleted the file: " + selectedFile.getName());
@@ -96,7 +94,6 @@ public class FilePanel extends JPanel {
 			}
 	}
 
-	
 	// Must take in an entire pathname to function
 	public void renameFile(String pathname) {
 		File newFile = new File(pathname);
@@ -107,36 +104,34 @@ public class FilePanel extends JPanel {
 		}
 		FillList(selectedDirectory);
 	}
-	
+
 	public void pasteFile(String s) throws IOException {
-        /*
-         * Copies the copiedFile into a newly created File
-         * determined by String s. This will typically be
-         * the selectedDirectory+"\\"+File(s).getName()
-         */
-        File newFile = new File(s);
-        try {
-            FileInputStream ins = new FileInputStream(copiedFile);
-            FileOutputStream outs = new FileOutputStream(newFile);
-            byte[] buffer = new byte[1024];
-            int length;
+		/*
+		 * Copies the copiedFile into a newly created File determined by String s. This
+		 * will typically be the selectedDirectory+"\\"+File(s).getName()
+		 */
+		File newFile = new File(s);
+		try {
+			FileInputStream ins = new FileInputStream(copiedFile);
+			FileOutputStream outs = new FileOutputStream(newFile);
+			byte[] buffer = new byte[1024];
+			int length;
 
-            while ((length = ins.read(buffer)) > 0) {
-                outs.write(buffer, 0, length);
-            }
-            ins.close();
-            outs.close();
+			while ((length = ins.read(buffer)) > 0) {
+				outs.write(buffer, 0, length);
+			}
+			ins.close();
+			outs.close();
 
-        } catch (FileNotFoundException ioe) {
-            ioe.printStackTrace();
-        }
-    }
-	
+		} catch (FileNotFoundException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+
 	/*******************************/
-	/*************GET&SET***********/
+	/************* GET&SET ***********/
 	/*******************************/
-	
-	
+
 	public File getFile() {
 		return selectedFile;
 	}
@@ -169,13 +164,11 @@ public class FilePanel extends JPanel {
 	public void setSelectedFile(File f) {
 		selectedFile = f;
 	}
-	
-	
+
 	/*******************************/
-	/**********POPUP CANCER ********/
+	/********** POPUP CANCER ********/
 	/*******************************/
-	
-	
+
 	public void buildpopMenu() {
 		popMenu = new JPopupMenu();
 		JMenuItem rename = new JMenuItem("Rename");// Complete
@@ -243,39 +236,39 @@ public class FilePanel extends JPanel {
 		}
 	}
 
-	
 	/*******************************/
 	/********** LISTENERS **********/
 	/*******************************/
 
-	
 	private class mouseListener extends MouseAdapter {
 		@Override
 		public void mouseClicked(MouseEvent me) {
-			if (me.getClickCount() == 1 && (me.getButton() == 1) && myList.locationToIndex(me.getPoint()) != -1) {
-				selectedFile = fileList[myList.getSelectedIndex()];
-				System.out.println("Selected file is: " + selectedFile.getName());
-			}
-			// SOMEHOW GET THIS SHIT TO WORK IN APP
-			if (me.getClickCount() == 1 && (me.getButton() == 3) && myList.locationToIndex(me.getPoint()) != -1) {
-				myList.setSelectedIndex(myList.locationToIndex(me.getPoint()));
-				selectedFile = fileList[myList.locationToIndex(me.getPoint())];
-				System.out.println("We right clicked on " + selectedFile.getName());
-				System.out.println("Selected file is: " + selectedFile.getName());
-				buildpopMenu();
-				popMenu.show(me.getComponent(), me.getX(), me.getY());
-			}
-			if (me.getClickCount() == 2 && (me.getButton() == 1) && myList.locationToIndex(me.getPoint()) != -1) {
-				selectedFile = fileList[myList.getSelectedIndex()];
-				runFile(selectedFile);
-			}
+			if (selectedDirectory != null) {
+				if (me.getClickCount() == 1 && (me.getButton() == 1) && myList.locationToIndex(me.getPoint()) != -1) {
+					selectedFile = fileList[myList.getSelectedIndex()];
+					System.out.println("Selected file is: " + selectedFile.getName());
+				}
+				// SOMEHOW GET THIS SHIT TO WORK IN APP
+				if (me.getClickCount() == 1 && (me.getButton() == 3) && myList.locationToIndex(me.getPoint()) != -1) {
+					myList.setSelectedIndex(myList.locationToIndex(me.getPoint()));
+					selectedFile = fileList[myList.locationToIndex(me.getPoint())];
+					System.out.println("We right clicked on " + selectedFile.getName());
+					System.out.println("Selected file is: " + selectedFile.getName());
+					buildpopMenu();
+					popMenu.show(me.getComponent(), me.getX(), me.getY());
+				}
+				if (me.getClickCount() == 2 && (me.getButton() == 1) && myList.locationToIndex(me.getPoint()) != -1) {
+					selectedFile = fileList[myList.getSelectedIndex()];
+					runFile(selectedFile);
+				}
 
-			System.out.println("Current Drive, based on FilePanel.java " + selectedDirectory.getPath().substring(0, 2));
-			/*
-			 * Why teh fuck would i think this would work App genesis = new App();
-			 * genesis.buildStatusBar(selectedDirectory.getPath().substring(0,2));
-			 */
-
+				System.out.println(
+						"Current Drive, based on FilePanel.java " + selectedDirectory.getPath().substring(0, 2));
+				/*
+				 * Why teh fuck would i think this would work App genesis = new App();
+				 * genesis.buildStatusBar(selectedDirectory.getPath().substring(0,2));
+				 */
+			}
 		}
 	}
 
@@ -289,7 +282,7 @@ public class FilePanel extends JPanel {
 
 	/******************************/
 	/******** DRAG AND DROP *******/
-	/**Thanks 4 this 1 professor***/
+	/** Thanks 4 this 1 professor ***/
 	/******************************/
 
 	class MyDropTarget extends DropTarget {
@@ -307,7 +300,7 @@ public class FilePanel extends JPanel {
 			try {
 				evt.acceptDrop(DnDConstants.ACTION_COPY);
 				List<Object> result = new ArrayList<Object>();
-				//If dragging from an external Source
+				// If dragging from an external Source
 				if (evt.getTransferable().isDataFlavorSupported(DataFlavor.stringFlavor)) {
 					String temp = (String) evt.getTransferable().getTransferData(DataFlavor.stringFlavor);
 					String[] next = temp.split("\\n");
@@ -318,8 +311,8 @@ public class FilePanel extends JPanel {
 						File pastedFile = new File(selectedDirectory.getPath() + "\\" + copiedFile.getName());
 						pasteFile(pastedFile.getPath());
 					}
-				} else { 
-					//If dragging from an internal Frame.
+				} else {
+					// If dragging from an internal Frame.
 					result = (List<Object>) evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
 					for (Object o : result) {
 						model.addElement(o.toString());

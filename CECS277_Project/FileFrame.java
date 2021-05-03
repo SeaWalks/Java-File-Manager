@@ -46,8 +46,5 @@ public class FileFrame extends JInternalFrame {
         this.setSize(600, 450);
         this.setVisible(true);
         this.setLocation(xPosition,yPosition);
-
     }
-
-
 }
