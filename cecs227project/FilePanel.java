@@ -1,160 +1,117 @@
+package CECS277_Project;
+
 import javax.swing.*;
-import java.awt.Desktop;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.awt.*;
+import java.util.List;
 import java.awt.dnd.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.awt.event.*;
 import java.awt.datatransfer.*;
 
 public class FilePanel extends JPanel {
-    private static final long serialVersionUID = 4085105696717794672L;
-    private JScrollPane scrollPane = new JScrollPane();
-    private DefaultListModel<String> model = new DefaultListModel<>();
-    private JList<String> myList = new JList<>();
-    private File[] fileList;
-    private File selectedFile, selectedDirectory, copiedFile;
-    private Boolean showDetails;
+	private static final long serialVersionUID = 4085105696717794672L;
+	private JScrollPane scrollPane = new JScrollPane();
+	private DefaultListModel<String> model = new DefaultListModel<>();
+	private JList<String> myList = new JList<>();
+	private File[] fileList;
+	private File selectedFile, selectedDirectory, copiedFile;
+	private Boolean showDetails;
+	private JPopupMenu popMenu;
 
-    public FilePanel() {
-        showDetails = false;
-        scrollPane.setViewportView(myList);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        this.setLayout(new BorderLayout());
-        this.add(scrollPane, BorderLayout.CENTER);
-        myList.setModel(model);
-        this.setDropTarget(new MyDropTarget());
-        myList.setDragEnabled(true);
-        // Listeners: is this good practice to put this here?
-        myList.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent me) {
-                if (me.getClickCount() == 1) {
-                    File selectedFile = fileList[myList.getSelectedIndex()];
-                    System.out.println("Selected file is: " + selectedFile.getName());
-                    // runFile(selectedFile);
-                }
-                if (me.getClickCount() == 2) {
-                    File selectedFile = fileList[myList.getSelectedIndex()];
-                    runFile(selectedFile);
-                }
-            }
-        });
-        myList.addKeyListener(new KeyAdapter() {
-            public void keyReleased(KeyEvent ke) {
-                if (ke.getKeyCode() == KeyEvent.VK_ENTER) {
-                    runFile(new File(myList.getSelectedValue()));
-                }
-            }
-        });
-        add(scrollPane);
-    }
+	public FilePanel() {
+		showDetails = false;
+		scrollPane.setViewportView(myList);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		this.setLayout(new BorderLayout());
+		this.add(scrollPane, BorderLayout.CENTER);
+		myList.setModel(model);
+		this.setDropTarget(new MyDropTarget());
+		myList.setDragEnabled(true);
+		myList.addMouseListener(new mouseListener());
+		myList.addKeyListener(new keyListener());
+		add(scrollPane);
+	}
 
-    public void FillList(File file) {
-        selectedDirectory = file;
-        fileList = file.listFiles();
-        File[] sorted = new File[fileList.length];
-        int counter = 0;
-        for (int i = 0; i < fileList.length; i++) {
-            if (fileList[i].isDirectory()) {
-                sorted[counter] = fileList[i];
-                counter++;// Only increment counter when something is added
-            }
-        }
-        for (int i = 0; i < fileList.length; i++) {
-            if (!fileList[i].isDirectory()) {
-                sorted[counter] = fileList[i];
-                counter++;// Only increment counter when something is added
-            }
-        }
-        fileList = sorted;
+	public void FillList(File file) {
+		selectedDirectory = file;
+		fileList = file.listFiles();
+		File[] sorted = new File[fileList.length];
+		int counter = 0;
+		for (int i = 0; i < fileList.length; i++) { //Add folders First
+			if (fileList[i].isDirectory()) {
+				sorted[counter] = fileList[i];
+				counter++;// Only increment counter when something is added
+			}
+		}
+		for (int i = 0; i < fileList.length; i++) { //Add files last
+			if (!fileList[i].isDirectory()) {
+				sorted[counter] = fileList[i];
+				counter++;// Only increment counter when something is added
+			}
+		}
+		fileList = sorted;
+		model.clear();
+		myList.removeAll();
+		myList.setFont(new Font("MONOSPACED", Font.PLAIN, 12));
+		
+		if (showDetails) {
+			for (File subfile : sorted) {
+				if (!subfile.isDirectory()) {
+					model.addElement(getDetails(subfile));
+				} else {
+					model.addElement(subfile.getName());
+				}
+			}
+		} else {
+			for (File subfile : sorted) {
+				model.addElement(subfile.getName());
+			}
+		}
+	}
+	
 
-        model.clear();
-        myList.removeAll();
-        myList.setFont(new Font("MONOSPACED", Font.PLAIN, 12));
-        // Debugg test: System.out.println("Show details is" + showDetails);
+	/*******************************/
+	/*******FILE OPERATIONS*********/
+	/*******************************/
+	
+	public void deleteFile() {
+		if (selectedFile.delete()) {
+			System.out.println("Deleted the file: " + selectedFile.getName());
+		} else {
+			System.out.println("Failed to delete the file.");
+		}
+		FillList(selectedDirectory);
+	}
 
-        if (showDetails) {
-            for (File subfile : sorted) {
-                if (!subfile.isDirectory()) {
-                    model.addElement(getDetails(subfile));
-                } else {
-                    model.addElement(subfile.getName());
-                }
-            }
-        } else {
-            for (File subfile : sorted) {
-                model.addElement(subfile.getName());
-            }
-        }
-    }
+	public void runFile(File file) {
+		Desktop desktop = Desktop.getDesktop();
+		if (file.exists())
+			try {
+				desktop.open(file);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	}
 
-    private String getDetails(File file) {
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        return String.format("%-40s %-20s %20s", file.getName(), (file.length() / 1024) + "KB",
-                sdf.format(file.lastModified()));
-    }
-
-    // Takes in a whole ass pathname to rename the selected file.
-    // PATHNAME MUST BE IN THE SAME DIRECTORY OR THINGS R FUK
-    public void renameFile(String pathname) {
-        // The way he specifies in the PDF:
-        File newFile = new File(pathname);
-        if (selectedFile.renameTo(newFile)) {
-            System.out.println("File succesfully renamed to: " + newFile.getName());
-        } else {
-            System.out.println("Something went wrong renaming the file.");
-        }
-        // Slightly better way, only requires the user to type in only the
-        // new file name without the directory path stuff.
+	
+	// Must take in an entire pathname to function
+	public void renameFile(String pathname) {
+		File newFile = new File(pathname);
+		if (selectedFile.renameTo(newFile)) {
+			System.out.println("File succesfully renamed to: " + newFile.getName());
+		} else {
+			System.out.println("Something went wrong renaming the file.");
+		}
+		FillList(selectedDirectory);
+	}
+	
+	public void pasteFile(String s) throws IOException {
         /*
-         * File betterFile = new File(selectedFile.getParent()+pathname); if
-         * (selectedFile.renameTo(newFile)){
-         * System.out.println("File succesfully renamed to: "+ betterFile.getName());
-         * }else{ System.out.println("Something went wrong renaming the file."); }
-         */
-    }
-
-    public File getFile() {
-        return selectedFile;
-    }
-
-    public void deleteSelectedFile() {
-        try {
-            System.out.println("Deleting File at: " + selectedFile.getPath());
-            selectedFile.delete();
-        } catch (Exception e) {
-            System.out.println("Something went wrong when deleting the file.");
-        }
-    }
-
-    public void runFile(File file) {
-        Desktop desktop = Desktop.getDesktop();
-        if (file.exists())
-            try {
-                desktop.open(file);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-    }
-
-    public void setCopiedFile(File file) {
-        copiedFile = file;
-    }
-
-    public void pasteFile(String s) throws IOException {
-        /*
-         * Basically the way this works is that we have a file caleld copiedFile which
-         * is the file to be copied. We then pass a file into this method, which will be
-         * the "place" this will be created. This will typically be
-         * selectedDirectory.getPath()+"\\"+copiedFile.getName() . However, the copy
-         * dialogue box requires the user to specify a directory, so thats why this
-         * takes in a string.
+         * Copies the copiedFile into a newly created File
+         * determined by String s. This will typically be
+         * the selectedDirectory+"\\"+File(s).getName()
          */
         File newFile = new File(s);
         try {
@@ -168,61 +125,217 @@ public class FilePanel extends JPanel {
             }
             ins.close();
             outs.close();
-            System.out.println("File copied successfully.");
+
         } catch (FileNotFoundException ioe) {
             ioe.printStackTrace();
         }
-
     }
+	
+	/*******************************/
+	/*************GET&SET***********/
+	/*******************************/
+	
+	
+	public File getFile() {
+		return selectedFile;
+	}
 
-    public void setShowDetails(Boolean toggle) {
-        showDetails = toggle;
-        FillList(selectedDirectory); // Redraw the list after changing the boolean
-    }
+	public JList<String> getmyList() {
+		return myList;
+	}
 
-    class MyDropTarget extends DropTarget {
-        /**************************************************************************
-         * 
-         * @param evt the event that caused this drop operation to be invoked
-         */
-        public void drop(DropTargetDropEvent evt) {
-            try {
-                // types of events accepted
-                evt.acceptDrop(DnDConstants.ACTION_COPY);
-                // storage to hold the drop data for processing
-                List result = new ArrayList();
-                // what is being dropped? First, Strings are processed
-                if (evt.getTransferable().isDataFlavorSupported(DataFlavor.stringFlavor)) {
-                    String temp = (String) evt.getTransferable().getTransferData(DataFlavor.stringFlavor);
-                    // String events are concatenated if more than one list item
-                    // selected in the source. The strings are separated by
-                    // newline characters. Use split to break the string into
-                    // individual file names and store in String[]
-                    String[] next = temp.split("\\n");
-                    // add the strings to the listmodel
-                    for (int i = 0; i < next.length; i++) {
-                        model.addElement(next[i]);
-                        setCopiedFile(new File(next[i]));
-                        File pastedFile = new File(selectedDirectory.getPath() + "\\" + copiedFile.getName());
-                        pasteFile(pastedFile.getPath());
-                    }
-                } else { // then if not String, Files are assumed
-                    result = (List) evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-                    // process the input
-                    for (Object o : result) {
-                        // System.out.println(o.toString()+"MOM WE DID IT");
-                        model.addElement(o.toString());
-                        setCopiedFile(new File(o.toString()));
-                        File pastedFile = new File(selectedDirectory.getPath() + "\\" + copiedFile.getName());
-                        pasteFile(pastedFile.getPath());
-                    }
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
+	public File[] getfileList() {
+		return fileList;
+	}
 
-            }
-        }
+	private String getDetails(File file) {
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		return String.format("%-40s %-20s %20s", file.getName(), (file.length()) + "B",
+				sdf.format(file.lastModified()));
+	}
 
-    }
+	public void setShowDetails(Boolean toggle) {
+		showDetails = toggle;
+		FillList(selectedDirectory); // Redraw the list after changing the boolean
+	}
 
+	public File setCopiedFile(File file) {
+		copiedFile = file;
+		System.out.println("File copied successfully." + file.getName());
+		return copiedFile;
+	}
+
+	public void setSelectedFile(File f) {
+		selectedFile = f;
+	}
+	
+	
+	/*******************************/
+	/**********POPUP CANCER ********/
+	/*******************************/
+	
+	
+	public void buildpopMenu() {
+		popMenu = new JPopupMenu();
+		JMenuItem rename = new JMenuItem("Rename");// Complete
+		rename.addActionListener(new popRename());
+
+		JMenuItem copy = new JMenuItem("Copy");// I think Complete
+		copy.addActionListener(new popCopy());
+
+		JMenuItem paste = new JMenuItem("Paste");// Need some Clarifiaction
+		paste.addActionListener(new popPaste());
+
+		JMenuItem delete = new JMenuItem("delete");
+		delete.addActionListener(new popDelete());
+
+		popMenu.add(rename);
+		popMenu.add(copy);
+		popMenu.add(paste);
+		popMenu.addSeparator();
+		popMenu.add(delete);
+		setSize(200, 400);
+		setVisible(true);
+	}
+
+	private class popRename implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			DataBack dbdlg = new DataBack();
+			dbdlg.setFileNameTextField(getFile().getPath());
+			dbdlg.setVisible(true);
+			String newFile = dbdlg.getFileNameTextField();
+			renameFile(newFile);
+		}
+	}
+
+	private class popCopy implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			setCopiedFile(getFile());
+			System.out.println("Copy File is set to: " + copiedFile.getName());
+		}
+	}
+
+	private class popPaste implements ActionListener {// NEEDS TO BE FIXED
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			try {
+				System.out.println("File was succesfully pasted");
+				pasteFile(selectedDirectory.getPath() + "\\" + copiedFile.getName());
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
+			}
+		}
+	}
+
+	private class popDelete implements ActionListener {// NEEDS TO BE FIXED
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			System.out.println("Delete: " + getFile());
+			deleteDLG dlg = new deleteDLG();
+			dlg.setFileNameTextField(getFile().getPath());
+			dlg.setVisible(true);
+			if (dlg.onOK()) {
+				deleteFile();
+			}
+		}
+	}
+
+	
+	/*******************************/
+	/********** LISTENERS **********/
+	/*******************************/
+
+	
+	private class mouseListener extends MouseAdapter {
+		@Override
+		public void mouseClicked(MouseEvent me) {
+			if (me.getClickCount() == 1 && (me.getButton() == 1) && myList.locationToIndex(me.getPoint()) != -1) {
+				selectedFile = fileList[myList.getSelectedIndex()];
+				System.out.println("Selected file is: " + selectedFile.getName());
+			}
+			// SOMEHOW GET THIS SHIT TO WORK IN APP
+			if (me.getClickCount() == 1 && (me.getButton() == 3) && myList.locationToIndex(me.getPoint()) != -1) {
+				myList.setSelectedIndex(myList.locationToIndex(me.getPoint()));
+				selectedFile = fileList[myList.locationToIndex(me.getPoint())];
+				System.out.println("We right clicked on " + selectedFile.getName());
+				System.out.println("Selected file is: " + selectedFile.getName());
+				buildpopMenu();
+				popMenu.show(me.getComponent(), me.getX(), me.getY());
+			}
+			if (me.getClickCount() == 2 && (me.getButton() == 1) && myList.locationToIndex(me.getPoint()) != -1) {
+				selectedFile = fileList[myList.getSelectedIndex()];
+				runFile(selectedFile);
+			}
+
+			System.out.println("Current Drive, based on FilePanel.java " + selectedDirectory.getPath().substring(0, 2));
+			/*
+			 * Why teh fuck would i think this would work App genesis = new App();
+			 * genesis.buildStatusBar(selectedDirectory.getPath().substring(0,2));
+			 */
+
+		}
+	}
+
+	private class keyListener extends KeyAdapter {
+		public void keyReleased(KeyEvent ke) {
+			if (ke.getKeyCode() == KeyEvent.VK_ENTER) {
+				runFile(new File(myList.getSelectedValue()));
+			}
+		}
+	}
+
+	/******************************/
+	/******** DRAG AND DROP *******/
+	/**Thanks 4 this 1 professor***/
+	/******************************/
+
+	class MyDropTarget extends DropTarget {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2681176772640578293L;
+
+		/**************************************************************************
+		 *
+		 * @param evt the event that caused this drop operation to be invoked
+		 */
+		@SuppressWarnings("unchecked")
+		public void drop(DropTargetDropEvent evt) {
+			try {
+				// types of events accepted
+				evt.acceptDrop(DnDConstants.ACTION_COPY);
+				// storage to hold the drop data for processing
+				List<Object> result = new ArrayList<Object>();
+				// what is being dropped? First, Strings are processed
+				if (evt.getTransferable().isDataFlavorSupported(DataFlavor.stringFlavor)) {
+					String temp = (String) evt.getTransferable().getTransferData(DataFlavor.stringFlavor);
+					// String events are concatenated if more than one list item
+					// selected in the source. The strings are separated by
+					// newline characters. Use split to break the string into
+					// individual file names and store in String[]
+					String[] next = temp.split("\\n");
+					// add the strings to the listmodel
+					for (int i = 0; i < next.length; i++) {
+						model.addElement(next[i]);
+						setCopiedFile(new File(next[i]));
+						File pastedFile = new File(selectedDirectory.getPath() + "\\" + copiedFile.getName());
+						pasteFile(pastedFile.getPath());
+					}
+				} else { // then if not String, Files are assumed
+					result = (List<Object>) evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+					// process the input
+					for (Object o : result) {
+						model.addElement(o.toString());
+						setCopiedFile(new File(o.toString()));
+						File pastedFile = new File(selectedDirectory.getPath() + "\\" + copiedFile.getName());
+						pasteFile(pastedFile.getPath());
+					}
+				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
 }

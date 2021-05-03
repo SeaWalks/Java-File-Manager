@@ -1,31 +1,32 @@
+package CECS277_Project;
+
 import java.io.*;
 
 public class FileNode {
-    private File file;
-    String filename;
+    File file;
+    String fileName;
 
-    public FileNode(String name) {
-        file = new File(name);
+    public FileNode(String fileName){
+        file = new File(fileName);
     }
 
-    public FileNode(String name, File f) {
-        filename = name;
+    public FileNode(String name, File f){
+        fileName = name;
         file = f;
     }
 
-    public File getFile() {
+    public File getFile(){
         return file;
     }
 
-    public String toString() {
-        if (file.getName().equals("")) {
-            return file.getAbsolutePath();
-        } else {
-            return file.getName();
-        }
+    public String toString(){
+        if(file.getName().equals(""))
+            return file.getPath();
+        return file.getName();
     }
 
-    public boolean isDirectory() {
+    public boolean isDirectory(){
         return file.isDirectory();
     }
+
 }

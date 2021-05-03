@@ -1,14 +1,32 @@
-import java.io.File;
+package CECS277_Project;
 
+import java.io.File;
 import javax.swing.JInternalFrame;
 import javax.swing.JSplitPane;
 
 public class FileFrame extends JInternalFrame {
-    private static final long serialVersionUID = -4223439902442375914L;
 
-    private JSplitPane splitpane;
-    private DirPanel LeftPanel;
-    private FilePanel RightPanel;
+
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2865150108091306126L;
+	private JSplitPane splitpane;
+    private final DirPanel LeftPanel;
+    private final FilePanel RightPanel;
+
+    public DirPanel getLeftPanel(){
+        return LeftPanel;
+    }
+
+    public FilePanel getRightPanel(){
+        return RightPanel;
+    }
+    
+    public JSplitPane getSplitPane() {
+    	return splitpane;
+    }
+
     //Now takes in arguments for the ROOT FOLDER and LOCATION
     public FileFrame(String rootFolder, int xPosition, int yPosition){
         File base = new File(rootFolder);
@@ -32,12 +50,8 @@ public class FileFrame extends JInternalFrame {
         this.setSize(600, 450);
         this.setVisible(true);
         this.setLocation(xPosition,yPosition);
-       
+
     }
-  
-    
+
+
 }
-
-
-
-	
