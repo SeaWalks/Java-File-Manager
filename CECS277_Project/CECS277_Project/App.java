@@ -172,13 +172,12 @@ class App extends JFrame {
 
 	public void buildStatusBar(String currentDrive) {
 		statusBar.removeAll();
-		
+	
 		File file = new File(currentDrive);
 		if(file.exists()) {
 		int freeSpace = (int) (file.getUsableSpace() / (1024 * 1024 * 1024));
 		int totalSpace = (int) (file.getTotalSpace() / (1024 * 1024 * 1024));
-		int usedSpace = totalSpace - freeSpace;
-		
+		int usedSpace = totalSpace - freeSpace;		
 		JLabel status = new JLabel("Current Drive: " + currentDrive + " Free Space: " + freeSpace + "GB"
 				+ " Used Space: " + usedSpace + "GB" + " Total Space: " + totalSpace + "GB");
 		statusBar.add(status);
