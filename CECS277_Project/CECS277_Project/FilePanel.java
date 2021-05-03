@@ -269,13 +269,6 @@ public class FilePanel extends JPanel {
 				selectedFile = fileList[myList.getSelectedIndex()];
 				runFile(selectedFile);
 			}
-
-			System.out.println("Current Drive, based on FilePanel.java " + selectedDirectory.getPath().substring(0, 2));
-			/*
-			 * Why teh fuck would i think this would work App genesis = new App();
-			 * genesis.buildStatusBar(selectedDirectory.getPath().substring(0,2));
-			 */
-
 		}
 	}
 

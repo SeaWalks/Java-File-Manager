@@ -15,7 +15,7 @@ import javax.swing.*;
  Details  -> Just need to link (use FilePanel.setShowDetails)
  3) RightClick Menu
  Rename   -> Just need to test and link. (Use FilePanel.renameFile)
- Copy     -> Just need to link. (Use FilePanel.setCopiedFile)
+ Copy     -> Just need to	 link. (Use FilePanel.setCopiedFile)
  Paste    -> Just need to link. (Use FilePanel.pasteFile)
  Delete   -> Just need to test and link. (Use FilePanel.deleteFile)
  4) Menubar Items
@@ -62,10 +62,9 @@ class App extends JFrame {
 	private JButton details, simple;
 	private JComboBox<String> toolbarBox;
 	private FileFrame ff;
-
+	private App app;
 	public App() {
 		mainPanel = new JPanel();
-		mainPanel.addMouseListener(new MyMouseListener()); //Triggers when you click on blank space in desktop pane. Why??
 		topPanel = new JPanel();
 		mb = new JMenuBar();
 		new JPanel();
@@ -73,8 +72,8 @@ class App extends JFrame {
 		statusBar = new JMenuBar();
 		details = new JButton("Details");
 		simple = new JButton("Simple");
-		ff = new FileFrame("C:\\", 0, 0);
-		ff.getLeftPanel().addMouseListener(new MyMouseListener()); //Should trigger on the left panel. Doesn't. WTF?
+		ff = new FileFrame(this, "C:\\", 0, 0);
+		app = this;
 	}
 
 	public void go() {
@@ -85,12 +84,7 @@ class App extends JFrame {
 		buildStatusBar("C:");
 		mainPanel.add(topPanel, BorderLayout.NORTH);
 		mainPanel.add(desktopPane, BorderLayout.CENTER);
-		// FILEFRAME TAKES IN ARGUMENTS NOW
-		// ff.addAncestorListener(new currentFrameAction());
-		// myList = ff.getRightPanel().getmyList();
-		// myList.addMouseListener(new MouseAdapter());
 		desktopPane.add(ff);
-		// ff.addInternalFrameListener(death);
 		this.add(mainPanel);
 		this.setSize(800, 600);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -171,12 +165,14 @@ class App extends JFrame {
 		topPanel.add(details);
 		topPanel.add(simple);
 		// toolbarBox.addActionListener(new toolbarBoxAction());
+		toolbarBox.addActionListener(new toolbarBoxAction());
 		details.addActionListener(new DetailsAction());
 		simple.addActionListener(new SimpleAction());
 	}
 
 	public void buildStatusBar(String currentDrive) {
 		statusBar.removeAll();
+		
 		File file = new File(currentDrive);
 		if(file.exists()) {
 		int freeSpace = (int) (file.getUsableSpace() / (1024 * 1024 * 1024));
@@ -193,71 +189,9 @@ class App extends JFrame {
 		}
 	}
 
-	
-
-	// public class statusbarActoimplements AncestorListener{ //COMPLETE
-	// @Override
-	// public void actionPerformed(ActionEvent e){
-	// String s = (String) toolbarBox.getSelectedItem();
-	// System.out.println("you selected " + s);
-	// buildStatusBar(s);
-	// mainPanel.revalidate();
-	// }
-	// }
-
-	// public void mouseClicked(MouseEvent e) {
-	// if (e.getClickCount() == 1 && e.getButton() == 3) {
-	// myList.setSelectedIndex(myList.locationToIndex(e.getPoint()));
-	// selectedFile = fileList[myList.locationToIndex(e.getPoint())];
-	// System.out.println("We right clicked on " + selectedFile.getName());
-	// ff.getRightPanel().buildpopMenu();
-	// popMenu.show(e.getComponent(), e.getX(), e.getY());
-	// }
-	// }
-	// });
-	// }
-	// private class rightClickAction
-
-	// private class currentFrame implements M{
-
-	// }
-	
-	
 	/*******************************/
 	/***********LISTENERS***********/
 	/*******************************/
-	
-	private class MyMouseListener extends MouseAdapter {
-		@Override
-		public void mouseClicked(MouseEvent me) {
-			if (selectedDirectory != null) {
-				if (me.getClickCount() == 1 && (me.getButton() == 1) && myList.locationToIndex(me.getPoint()) != -1) {
-					selectedFile = fileList[myList.getSelectedIndex()];
-					System.out.println("Selected file is: " + selectedFile.getName());
-				}
-				// SOMEHOW GET THIS SHIT TO WORK IN APP
-				if (me.getClickCount() == 1 && (me.getButton() == 3) && myList.locationToIndex(me.getPoint()) != -1) {
-					myList.setSelectedIndex(myList.locationToIndex(me.getPoint()));
-					selectedFile = fileList[myList.locationToIndex(me.getPoint())];
-					System.out.println("We right clicked on " + selectedFile.getName());
-					System.out.println("Selected file is: " + selectedFile.getName());
-					buildpopMenu();
-					popMenu.show(me.getComponent(), me.getX(), me.getY());
-				}
-				if (me.getClickCount() == 2 && (me.getButton() == 1) && myList.locationToIndex(me.getPoint()) != -1) {
-					selectedFile = fileList[myList.getSelectedIndex()];
-					runFile(selectedFile);
-				}
-
-				System.out.println(
-						"Current Drive, based on FilePanel.java " + selectedDirectory.getPath().substring(0, 2));
-				/*
-				 * Why teh fuck would i think this would work App genesis = new App();
-				 * genesis.buildStatusBar(selectedDirectory.getPath().substring(0,2));
-				 */
-			}
-		}
-	}
 	private class SimpleAction implements ActionListener { // COMPLETE
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -337,6 +271,16 @@ class App extends JFrame {
 			}
 		}
 	}
+	
+	private class toolbarBoxAction implements ActionListener{ //COMPLETE
+        @Override
+        public void actionPerformed(ActionEvent e){
+             String s = (String) toolbarBox.getSelectedItem();
+             System.out.println("you selected " + s);
+             buildStatusBar(s);
+            mainPanel.revalidate();
+        }
+     }
 
 	private class ExitAction implements ActionListener { // COMPLETE
 		@Override
@@ -364,10 +308,9 @@ class App extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String s = (String) toolbarBox.getSelectedItem();
-			FileFrame ff = new FileFrame(s, 0, 100);
+			FileFrame ff = new FileFrame(app, s, 0, 100);
 			desktopPane.add(ff);
 
-			// STATUS BAR MIGHT NEED TO UPDATE BASED ON PANEL IN FOCUS
 		}
 	}
 

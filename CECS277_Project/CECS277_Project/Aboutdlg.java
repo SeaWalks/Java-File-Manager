@@ -1,24 +1,25 @@
 package CECS277_Project;
 
+
 import javax.swing.*;
 import java.awt.event.*;
 
-public class creativeHelpDLG extends JDialog {
+public class Aboutdlg extends JDialog {
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 4648476112079016265L;
+	private static final long serialVersionUID = -1417250597309717826L;
 	private JPanel contentPane;
     private JButton buttonOK;
-    private JTextField httpsWwwYoutubeComTextField;
 
-    public creativeHelpDLG() {
+    public Aboutdlg() {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
         this.setSize(400, 200);
         buttonOK.addActionListener(new okAction() {
-            public void actionPerformed(ActionEvent e) {
+            @Override
+			public void actionPerformed(ActionEvent e) {
                 onOK();
             }
         });
@@ -28,6 +29,5 @@ public class creativeHelpDLG extends JDialog {
         // add your code here
         dispose();
     }
-
-
 }
+

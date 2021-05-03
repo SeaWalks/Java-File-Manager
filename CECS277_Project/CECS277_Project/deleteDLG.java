@@ -1,52 +1,50 @@
 package CECS277_Project;
 
+
 import javax.swing.*;
 import java.awt.event.*;
 
-public class DataBack extends JDialog {
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 7370073082092212851L;
+public class deleteDLG extends JDialog {
+ 
+	private static final long serialVersionUID = -5610037078916689838L;
+
 	private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
-    private JTextField textField1;
-    private JTextField textField2;
+    private JTextField fileNameTextField;
 
-    public DataBack() {
+    public deleteDLG() {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
         this.setSize(400, 200);
+
         buttonOK.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            @Override
+			public void actionPerformed(ActionEvent e) {
                 onOK();
             }
         });
 
         buttonCancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            @Override
+			public void actionPerformed(ActionEvent e) {
                 onCancel();
             }
         });
 
-        // call onCancel() when cross is clicked
-
     }
 
     public void setFileNameTextField(String s){
-       textField1.setText(s);
+        fileNameTextField.setText(s);
     }
 
-    public String getFileNameTextField(){
-        return textField2.getText();
-    }
-    private void onOK() {
-        // add your code here
+
+    public boolean onOK() {
+
         dispose();
+        return true;
     }
-
     private void onCancel() {
         // add your code here if necessary
         dispose();

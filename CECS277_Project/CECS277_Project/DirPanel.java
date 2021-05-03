@@ -1,5 +1,6 @@
 package CECS277_Project;
 
+
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
@@ -57,6 +58,7 @@ public class DirPanel extends JPanel {
 		scrollPane.setViewportView(tree);
 		this.setLayout(new BorderLayout());
 		this.add(scrollPane, BorderLayout.CENTER);
+		currentDrive = base.getPath().substring(0, 2);
 	}
 
 	/*******************************/

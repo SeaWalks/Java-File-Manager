@@ -1,16 +1,17 @@
 package CECS277_Project;
 
+
 import java.io.*;
 
-public class MyFileNode {
+public class FileNode {
     File file;
     String fileName;
 
-    public MyFileNode(String fileName){
+    public FileNode(String fileName){
         file = new File(fileName);
     }
 
-    public MyFileNode(String name, File f){
+    public FileNode(String name, File f){
         fileName = name;
         file = f;
     }
@@ -19,7 +20,8 @@ public class MyFileNode {
         return file;
     }
 
-    public String toString(){
+    @Override
+	public String toString(){
         if(file.getName().equals(""))
             return file.getPath();
         return file.getName();
@@ -28,7 +30,5 @@ public class MyFileNode {
     public boolean isDirectory(){
         return file.isDirectory();
     }
-
-
 
 }
